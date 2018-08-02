@@ -13,6 +13,14 @@
 # 5.  Remove /Library/LaunchDaemons/org.wireshark.ChmodBPF.plist
 # 6.  Remove the access_bpf group.
 
+##
+# Adding support for the following additional items provided in 
+# Wireshark "Read me first.rtf" for MacOSX dmg version 2.6.2 (intel)
+# 7.	Remove /etc/paths.d/Wireshark
+# 8.	Remove /etc/manpaths.d/Wireshark
+
+## -- E Byrne
+
 
 export PATH='/usr/bin:/usr/sbin:/bin:/sbin'
 
@@ -153,6 +161,27 @@ remove_access_bpf_group()
   fi
 }
 
+# Remove /etc/ files as per additional comment
+remove_etc_paths_d()
+{
+  local etc_path='/etc/paths.d/Wireshark'	# set path per wireshark doc
+  if [ -f $etc_path ];	# make sure the file exists & is regular file
+   then rm $etc_path > /dev/null 2>&1 	# no need to report output
+  else
+   err "$etc_path does not exist"	# error using predefined function
+  fi
+}
+
+remove_etc_manpaths_d()
+{
+  local etc_manpath='/etc/manpaths.d/Wireshark'
+  if [ -f $etc_manpath ];
+   then rm $etc_manpath > /dev/null 2>&1
+  else
+   err "$etc_manpath does not exist"
+  fi
+}
+
 #----------------------------------------------------------------------
 # Script
 #----------------------------------------------------------------------
@@ -190,3 +219,7 @@ done
 # Remove access_bpf group and resture bpf device permissions
 restore_bpf_dev
 remove_access_bpf_group
+
+# Remove /etc/paths.d and /etc/manpaths.d files
+remove_etc_paths_d
+remove_etc_manpaths_d
